@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { db } from "@workspace/db";
 import { conversations, messages } from "@workspace/db";
-import { eq } from "drizzle-orm";
+import { eq, and, desc } from "drizzle-orm";
 import { GoogleGenAI } from "@google/genai";
 import { SCHOOL_KNOWLEDGE } from "./schoolKnowledge";
 
@@ -13,42 +13,140 @@ function getAI() {
   return new GoogleGenAI({ apiKey });
 }
 
-const SYSTEM_PROMPTS: Record<string, string> = {
-  learner: `You are SKAVS (Smart Knowledge & Virtual Support), the official AI assistant for Hoye Secondary School in Bergville. You are speaking with a LEARNER (student).
+function getEducatorPassword() {
+  return process.env["EDUCATOR_PASSWORD"] ?? "Hoye2026";
+}
 
-RULES:
-- Always be polite, welcoming, and helpful.
-- Keep answers concise, direct, and easy to read on a mobile phone. Use bullet points when helpful.
-- For homework or curriculum questions: NEVER give direct answers. Use the Socratic method — ask guiding questions, give hints, and provide analogies relevant to Bergville school life (sports, community events) to help the learner think it through themselves.
-- For school information questions: answer directly and accurately using the knowledge base below.
-- If a question is NOT covered in your knowledge base, say: "I don't have that information right now, but please contact Ms. Xaba at the admin office for help."
-- Do NOT say "According to the document" — just give the answer directly.
+const FORMATTING_RULES = `
+FORMATTING RULES (strictly follow these):
+- Write in plain, professional prose. Do NOT use markdown symbols.
+- Do NOT use asterisks (*) for bold, bullet points, or any emphasis.
+- Do NOT use hash signs (#) for headings.
+- Do NOT use underscores (_) for italics.
+- Do NOT use backticks (\`) for code.
+- For lists, use a simple dash (-) followed by a space, or numbered items like "1. Item".
+- Separate sections with a blank line.
+- Keep your tone warm, clear, and professional — like a trusted school advisor speaking directly.
+- Always address the user by their first name in every single response.
+`;
 
-${SCHOOL_KNOWLEDGE}`,
+function buildSystemPrompt(role: string, name: string, grade?: string | null): string {
+  const gradeContext = grade
+    ? `This learner is in Grade ${grade}. Adjust your language and explanations to be appropriate for a Grade ${grade} student in a South African secondary school.`
+    : "";
 
-  educator: `You are SKAVS (Smart Knowledge & Virtual Support), the official AI assistant for Hoye Secondary School in Bergville. You are speaking with an EDUCATOR (teacher or staff member).
+  const base = `You are SKAVS (Smart Knowledge & Virtual Support), the official AI assistant for Hoye Secondary School in Bergville, KwaZulu-Natal, South Africa.
+The user's name is ${name}. Address them as ${name} in every single response — do not skip this.
 
-RULES:
-- Always be polite, welcoming, and professional.
-- Keep answers structured, practical, and easy to read on a mobile phone. Use bullet points and numbered steps.
-- Help with: 45-minute lesson blueprints (10-min hook → 20-min mechanics → 15-min review), pacing schedules, curriculum deconstruction, and learner intervention strategies.
-- Answer school policy and staff questions using the knowledge base below.
-- If a question is NOT covered in your knowledge base, say: "I don't have that information right now, but please contact Ms. Xaba at the admin office for help."
-- Do NOT say "According to the document" — just give the answer directly.
+${FORMATTING_RULES}
 
-${SCHOOL_KNOWLEDGE}`,
+If a question is not covered in your knowledge base below, respond with: "I don't have that information right now, ${name}, but please contact Ms. Xaba at the admin office for help."
+Do NOT say "According to the document" — just give the answer naturally and directly.`;
 
-  parent: `You are SKAVS (Smart Knowledge & Virtual Support), the official AI assistant for Hoye Secondary School in Bergville. You are speaking with a PARENT or GUARDIAN.
+  if (role === "learner") {
+    return `${base}
 
-RULES:
-- Always be polite, welcoming, and helpful.
-- Keep answers concise, direct, and easy to read on a mobile phone. Use bullet points when helpful.
-- Answer ONLY based on the school knowledge base below. Do NOT guess or make up information.
-- If a question is NOT covered in your knowledge base, say: "I don't have that information right now, but please contact Ms. Xaba at the admin office for help."
-- Do NOT say "According to the document" — just give the answer directly.
+You are speaking with a LEARNER (student) named ${name}. ${gradeContext}
 
-${SCHOOL_KNOWLEDGE}`,
-};
+LEARNER-SPECIFIC RULES:
+- For homework or exam questions: NEVER give the direct answer. Instead, use the Socratic method — ask a guiding question or offer a hint that helps ${name} think it through. Use analogies from Bergville life (community, sport, school events) to make concepts relatable.
+- For school information questions (uniform, fees, staff, timetable, etc.): answer directly and accurately.
+- Keep responses short and easy to read on a mobile phone.
+- Be encouraging and patient. ${name} can do it.
+
+${SCHOOL_KNOWLEDGE}`;
+  }
+
+  if (role === "educator") {
+    return `${base}
+
+You are speaking with an EDUCATOR (teacher or staff member) named ${name}.
+
+EDUCATOR-SPECIFIC RULES:
+- Help with: creating 45-minute lesson blueprints (10-min engagement hook, 20-min key mechanics, 15-min formative review), pacing schedules, curriculum deconstruction, learner intervention strategies, and assessment design.
+- If an image or document is shared, analyze it carefully and provide detailed professional feedback.
+- Keep responses structured and practical for a busy teacher on a mobile phone.
+- You may answer any school policy or staff management questions using the knowledge base.
+
+${SCHOOL_KNOWLEDGE}`;
+  }
+
+  // parent
+  return `${base}
+
+You are speaking with a PARENT or GUARDIAN named ${name}.
+
+PARENT-SPECIFIC RULES:
+- Answer questions about registration, documents, uniform, fees, calendar, staff contacts, and school policies.
+- Answer ONLY based on the school knowledge base. Do NOT guess or invent information.
+- Keep answers short and easy to read on a mobile phone.
+
+${SCHOOL_KNOWLEDGE}`;
+}
+
+// ─── Educator Auth ────────────────────────────────────────────────────────────
+
+router.post("/educator/verify", (req, res) => {
+  const { password } = req.body as { password?: string };
+  if (!password) {
+    res.status(400).json({ ok: false, error: "Password required" });
+    return;
+  }
+  if (password === getEducatorPassword()) {
+    res.json({ ok: true });
+  } else {
+    res.status(401).json({ ok: false, error: "Incorrect password" });
+  }
+});
+
+// ─── Educator Trending ───────────────────────────────────────────────────────
+
+router.get("/educator/trending", async (req, res) => {
+  const password = req.headers["x-educator-password"] as string | undefined;
+  if (password !== getEducatorPassword()) {
+    res.status(401).json({ error: "Unauthorized" });
+    return;
+  }
+  try {
+    const grade = req.query["grade"] as string | undefined;
+
+    const allConvs = await db
+      .select({ id: conversations.id, grade: conversations.grade })
+      .from(conversations)
+      .where(eq(conversations.role, "learner"));
+
+    const filteredIds = grade
+      ? allConvs.filter((c) => c.grade === grade).map((c) => c.id)
+      : allConvs.map((c) => c.id);
+
+    if (filteredIds.length === 0) {
+      res.json([]);
+      return;
+    }
+
+    const allMessages = await db
+      .select({
+        content: messages.content,
+        createdAt: messages.createdAt,
+        conversationId: messages.conversationId,
+      })
+      .from(messages)
+      .where(eq(messages.role, "user"))
+      .orderBy(desc(messages.createdAt))
+      .limit(100);
+
+    const filtered = allMessages
+      .filter((m) => filteredIds.includes(m.conversationId))
+      .slice(0, 40);
+
+    res.json(filtered);
+  } catch (err) {
+    req.log.error({ err }, "Failed to get trending questions");
+    res.status(500).json({ error: "Failed to get trending questions" });
+  }
+});
+
+// ─── Conversations ────────────────────────────────────────────────────────────
 
 router.get("/conversations", async (req, res) => {
   try {
@@ -62,14 +160,14 @@ router.get("/conversations", async (req, res) => {
 
 router.post("/conversations", async (req, res) => {
   try {
-    const { title, role } = req.body as { title: string; role: string };
+    const { title, role, grade } = req.body as { title: string; role: string; grade?: string };
     if (!title || !role) {
       res.status(400).json({ error: "title and role are required" });
       return;
     }
     const [conv] = await db
       .insert(conversations)
-      .values({ title, role })
+      .values({ title, role, grade: grade ?? null })
       .returning();
     res.status(201).json(conv);
   } catch (err) {
@@ -81,10 +179,7 @@ router.post("/conversations", async (req, res) => {
 router.get("/conversations/:id", async (req, res) => {
   try {
     const id = parseInt(req.params["id"] ?? "0", 10);
-    const [conv] = await db
-      .select()
-      .from(conversations)
-      .where(eq(conversations.id, id));
+    const [conv] = await db.select().from(conversations).where(eq(conversations.id, id));
     if (!conv) {
       res.status(404).json({ error: "Conversation not found" });
       return;
@@ -104,10 +199,7 @@ router.get("/conversations/:id", async (req, res) => {
 router.delete("/conversations/:id", async (req, res) => {
   try {
     const id = parseInt(req.params["id"] ?? "0", 10);
-    const [conv] = await db
-      .select()
-      .from(conversations)
-      .where(eq(conversations.id, id));
+    const [conv] = await db.select().from(conversations).where(eq(conversations.id, id));
     if (!conv) {
       res.status(404).json({ error: "Conversation not found" });
       return;
@@ -136,28 +228,39 @@ router.get("/conversations/:id/messages", async (req, res) => {
   }
 });
 
+// ─── Send Message (SSE, supports image/document) ─────────────────────────────
+
 router.post("/conversations/:id/messages", async (req, res) => {
   try {
     const id = parseInt(req.params["id"] ?? "0", 10);
-    const { content } = req.body as { content: string };
-    if (!content) {
-      res.status(400).json({ error: "content is required" });
+    const {
+      content,
+      imageBase64,
+      imageMimeType,
+      userName,
+    } = req.body as {
+      content: string;
+      imageBase64?: string;
+      imageMimeType?: string;
+      userName?: string;
+    };
+
+    if (!content && !imageBase64) {
+      res.status(400).json({ error: "content or imageBase64 is required" });
       return;
     }
 
-    const [conv] = await db
-      .select()
-      .from(conversations)
-      .where(eq(conversations.id, id));
+    const [conv] = await db.select().from(conversations).where(eq(conversations.id, id));
     if (!conv) {
       res.status(404).json({ error: "Conversation not found" });
       return;
     }
 
+    const displayContent = content || "[Image shared]";
     await db.insert(messages).values({
       conversationId: id,
       role: "user",
-      content,
+      content: displayContent,
     });
 
     const chatHistory = await db
@@ -171,11 +274,36 @@ router.post("/conversations/:id/messages", async (req, res) => {
     res.setHeader("Connection", "keep-alive");
     res.flushHeaders();
 
-    const role = conv.role ?? "parent";
-    const systemPrompt = SYSTEM_PROMPTS[role] ?? SYSTEM_PROMPTS["parent"]!;
+    const name = userName ?? "there";
+    const systemPrompt = buildSystemPrompt(conv.role ?? "parent", name, conv.grade);
 
     const ai = getAI();
     let fullResponse = "";
+
+    // Build message contents — all history is text, latest may have an image
+    const historyMessages = chatHistory.slice(0, -1).map((m) => ({
+      role: m.role === "assistant" ? "model" : ("user" as const),
+      parts: [{ text: m.content }],
+    }));
+
+    // Build the latest user message parts
+    type GeminiPart =
+      | { text: string }
+      | { inlineData: { mimeType: string; data: string } };
+
+    const latestParts: GeminiPart[] = [];
+    if (content) latestParts.push({ text: content });
+    if (imageBase64 && imageMimeType) {
+      latestParts.push({
+        inlineData: { mimeType: imageMimeType, data: imageBase64 },
+      });
+    }
+    if (latestParts.length === 0) latestParts.push({ text: displayContent });
+
+    const allContents = [
+      ...historyMessages,
+      { role: "user" as const, parts: latestParts },
+    ];
 
     const stream = await ai.models.generateContentStream({
       model: "gemini-2.5-flash",
@@ -183,10 +311,7 @@ router.post("/conversations/:id/messages", async (req, res) => {
         systemInstruction: systemPrompt,
         maxOutputTokens: 8192,
       },
-      contents: chatHistory.map((m) => ({
-        role: m.role === "assistant" ? "model" : "user",
-        parts: [{ text: m.content }],
-      })),
+      contents: allContents,
     });
 
     for await (const chunk of stream) {
