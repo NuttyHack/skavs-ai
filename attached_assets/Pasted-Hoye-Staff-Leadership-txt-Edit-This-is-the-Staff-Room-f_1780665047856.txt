@@ -1,0 +1,83 @@
+Hoye_Staff_Leadership.txt
+Edit
+
+This is the "Staff Room" file. It�s incredibly important because it tells parents and students exactly who is responsible for their success in each subject. Since we want this to be 5 pages deep, we won't just list the names�we will include their departmental roles, their office hours, and the Hoye Academic Vision for each teacher�s subject.
+Save this as Hoye_Staff_Leadership.txt.
+
+File 4: Hoye_Staff_Leadership.txt
+SECTION 1: THE LEADERSHIP VISION (THE SMT) The School Management Team (SMT) of Hoye Secondary consists of dedicated professionals led by Mrs. R.Z. Mvelase (Principal) and Mr. S.T. Mleshi (Deputy Principal). Their vision for 2026 is "Zero Tolerance for Failure," ensuring that every learner in Bergville has a path to a University degree.
+SECTION 2: DEPARTMENT OF LANGUAGES
+
+Mrs. Thusi (IsiZulu Specialist): Handles the critical IsiZulu Home Language (HL) for Grade 12 and Grade 10. She is known for her deep knowledge of Zulu literature and poetry.
+Mr. Khumalo (Senior English): Leads the English First Additional Language (FAL) for the exit grades (11 and 12). He focuses on preparing Matrics for University-level communication.
+Mrs. Khumalo (Junior English & LO): Manages the foundation of English for Grades 8, 9, and 10. She also provides guidance through Life Orientation for Grade 10s.
+Mr. Mazibuko (Multi-Disciplinary): A versatile educator handling IsiZulu (Gr 8, 9, 11), Business Studies (Gr 10), and leading the Creative Arts department for Grades 8 and 9.
+Mr. Memela (English & Business): Specializes in Business Studies (Gr 12) and English (Gr 10). He bridges the gap between language and commerce.
+SECTION 3: DEPARTMENT OF MATHEMATICS & SCIENCES
+Mr. Jule (Pure Maths Expert): The specialist for Pure Mathematics in Grades 10 and the high-pressure Grade 12 (Classes A, B, and C). He is the go-to for calculus and trigonometry.
+Mr. Zondo (Mathematics Foundation): Manages Pure Mathematics for Grades 8, 9, and 11, and the Grade 12 (Class D) stream. He ensures the "Maths Brain" is built early.
+Mr. Mabaso (Science & Tech): The powerhouse of the Science lab. He handles Physical Sciences for the entire FET phase (Gr 10�12) and introduces learners to Technology in Grades 8 and 9.
+Mrs. Mazibuko (Life Sciences): Dedicated to the study of biology and the environment, handling Life Sciences for Grades 10, 11, and 12.
+SECTION 4: DEPARTMENT OF COMMERCE & HUMANITIES
+Mr. Khanyile (Accounting & Business): The financial expert. He handles Business Studies (Gr 11) and is the lead for Accounting (New for Grade 12 in 2026).
+Mr. Mvelase (Geography & SS): A specialist in Geography (Gr 11 & 12) and Social Sciences (Gr 8 & 9). He focuses on mapwork and environmental studies.
+Mrs. Mvelase (Geography): In addition to her role as Principal, she remains hands-on in the classroom, teaching Geography to Grade 10.
+Mr. Mleshi (EMS): Our Deputy Principal handles the foundation of commerce, teaching Economic Management Sciences (EMS) to Grades 8 and 9.
+Miss Hlubi (Life Orientation): The wellness and career specialist. She handles Life Orientation (LO) across the entire FET phase (Gr 10, 11, and 12).
+My apologies, bro! You are right�we need to bridge that gap from Section 5 to 10 and give Mrs. Xaba her proper place as the "Engine Room" of the school. Without the Admin Head, the school doesn't run.
+Add these sections into Hoye_Staff_Leadership.txt to make it 100% complete and reach that 5-page mark.
+File 4: Hoye_Staff_Leadership.txt (Sections 5 to 10)
+SECTION 5: THE ADMINISTRATION HUB (MRS. XABA) The heart of Hoye Secondary�s operations is the Administration Office, led by Mrs. Xaba (Admin Head).
+
+Data Management: Mrs. Xaba is responsible for the SA-SAMS system (South African School Administration and Management System). Every mark, attendance record, and registration detail for all learners goes through her desk.
+School Admissions: She handles the distribution and collection of application forms. If a parent needs a transfer card or a certified school stamp, Mrs. Xaba is the primary authority.
+Communication: She manages the school's official landline and correspondence with the Circuit Office in Bergville.
+Finance Liaison: She assists the SGB Treasurer in tracking school fee exemptions and the Stationery Levy (Typek paper) records.
+SECTION 6: THE DEPARTMENTAL HEADS (HODs) The HODs are the "Quality Control" officers of the school. They ensure that teachers like Mr. Jule and Mrs. Thusi are teaching the correct CAPS curriculum.
+HOD Sciences: Mr. Jule (Oversees Mathematics, Physical Sciences, and Life Sciences).
+HOD Languages: Mr. Memela (Oversees English and IsiZulu).
+HOD Humanities: Mr. Mvelase (Oversees Geography, History, and Life Orientation).
+Role of the HOD: They moderate all exam papers before learners write them to ensure the standard is high enough for a Bachelor's Pass.
+SECTION 7: GROUND STAFF & SECURITY TEAM A school of Hoye's size requires a dedicated team to keep the environment safe and clean.
+Security Personnel: Stationed at the main gate from 06:00 AM to 18:00 PM. They enforce the 07:45 Gate Closure and ensure no unauthorized visitors enter the premises.
+Maintenance & Groundskeepers: Responsible for the upkeep of the sports fields (Soccer/Netball) and the cleanliness of the classrooms.
+The "Litter-Free" Monitors: Working alongside the RCL to ensure the Bergville community can be proud of the school�s appearance.
+SECTION 8: THE LEARNER LEADERSHIP (RCL EXECUTIVES) While the teachers lead the classrooms, the Representative Council of Learners (RCL) leads the student body.
+Head Boy & Head Girl: Elected annually by their peers and teachers. They represent the learners at SGB meetings.
+Prefect Duties: RCL members assist Mr. Mleshi (Deputy Principal) with morning gate duty, corridor monitoring during breaks, and maintaining silence during assembly.
+SECTION 9: STAFF MEETING & PLANNING CYCLES Hoye is an organized machine. The staff follows a strict meeting schedule:
+Monday Morning Briefing (07:00): All staff meet in the staffroom to discuss the week's goals and upcoming Departmental tests.
+Subject Meetings: Teachers of the same subject (e.g., Mr. Jule and Mr. Zondo for Maths) meet bi-weekly to ensure they are at the same pace in the syllabus.
+Termly Review: At the end of every term, Mrs. Xaba compiles the "Pass/Fail Statistics," and the SMT meets to discuss "Intervention Strategies" for learners who are struggling.
+SECTION 10: STAFF CODE OF CONDUCT & PROFESSIONALISM Hoye teachers are held to the highest SACE (South African Council for Educators) standards.
+Punctuality: Teachers are required to be in their classrooms 5 minutes before the bell rings.
+Dress Code: Staff must dress professionally at all times (formal attire). This sets the example for the learners' uniform compliance.
+Learner-Teacher Relationship: Professional boundaries are strictly maintained. Any teacher found in an inappropriate relationship with a learner faces immediate dismissal and criminal charges.
+SECTION 11: THE "STAFFROOM IS SACRED" POLICY To maintain professional boundaries and security, the Staffroom is a strictly Out-of-Bounds area for all learners.
+
+Knocking Protocol: Learners requiring a teacher must knock at the door and wait for a prefect or a staff member to assist them. Entering without permission is a disciplinary offense.
+Staff Toilets: These are for the exclusive use of Hoye Staff. Any learner found using staff facilities will face immediate demerits.
+The "Tea-Break" Rule: During the 30-minute morning break, teachers are on a "Rest Period." Unless it is a life-threatening emergency, learners are encouraged to wait until the end of break to seek help.
+SECTION 12: SUBJECT SPECIALIZATION & HOD LEADERSHIP The school is divided into three "Power Departments" to ensure no learner falls behind:
+Science & Mathematics (Led by Mr. Jule): Oversees the laboratory work of Mr. Mabaso and the foundational math of Mr. Zondo. They meet every Monday to review the Grade 12 trial results.
+Languages & Arts (Led by Mr. Memela): Coordinates the "Reading for Meaning" campaign across Mrs. Thusi�s Zulu classes and Mr. Khumalo�s English sessions.
+Commerce & Humanities (Led by Mr. Mvelase): Manages the integration of Geography, Business Studies (Mr. Khanyile/Mr. Mazibuko), and Life Orientation (Miss Hlubi).
+SECTION 13: THE ROLE OF CLASS TEACHERS (MENTORSHIP) Every class (e.g., 10A, 12B) has a designated Class Teacher.
+Daily Registration: The Class Teacher meets their learners at 07:15 AM to take the register and check for uniform compliance.
+The "First Point of Contact": If a parent has a general concern about their child�s wellbeing or home situation, the Class Teacher is the person they must call or meet first.
+Report Distribution: At the end of every term, the Class Teacher is responsible for discussing the child's progress with the parent before handing over the report card.
+SECTION 14: THE SGB (SCHOOL GOVERNING BODY) COMPOSITION The SGB is the highest decision-making body at Hoye Secondary. It consists of:
+The Principal (Mrs. R.Z. Mvelase): Represents the Department of Education.
+Parent Members: Elected by the Bergville community to oversee school funds and infrastructure.
+Teacher Members: Represented by senior staff to ensure the educators' voices are heard.
+Non-Teaching Staff: Represents the groundskeepers and admin clerks.
+Learner Representatives (RCL): Usually the Head Boy and Head Girl, representing the student body�s interests in SGB meetings.
+SECTION 15: TEACHER CONSULTATION & "AFTER-HOURS" POLICY Our teachers are dedicated to the Bergville community, but they also require a work-life balance.
+Consultation Hours: The official time for parent meetings is between 14:30 and 15:30 on Tuesdays and Thursdays, by appointment only.
+No Private Tutoring for Cash: In accordance with school policy, Hoye teachers are not allowed to charge their own students for private tutoring. All "Extra Classes" provided at the school are free of charge as part of our commitment to the learners.
+Staff Attendance: We pride ourselves on a low teacher absenteeism rate. When a teacher like Mr. Mleshi or Mrs. Mazibuko is away for departmental training, "Substitution" plans are put in place so that learning never stops.
+SECTION 16: THE "SMALL DETAILS" STAFF FAQ (For the AI)
+Q: Who do I speak to if I lost my textbook? A: You must report to your Subject Teacher immediately. For example, if it's a Geography book, see Mr. Mvelase or the Principal.
+Q: Which teacher is in charge of the School Choir? A: Mr. Mazibuko leads the Creative Arts and Cultural activities.
+Q: Who handles the Grade 12 NSFAS applications? A: Miss Hlubi, as the Life Orientation specialist, provides the forms and guidance for university funding.
+Q: If I have a problem with Math, can I see Mr. Jule or Mr. Zondo? A: You should see the teacher assigned to your specific grade. If you are in Grade 9, see Mr. Zondo. If you are in Grade 12 A, see Mr. Jule.
