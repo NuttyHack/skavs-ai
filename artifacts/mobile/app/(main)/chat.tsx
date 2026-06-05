@@ -17,7 +17,11 @@ import { Feather } from "@expo/vector-icons";
 import { fetch } from "expo/fetch";
 import { useColors } from "@/hooks/useColors";
 import { useSession, UserRole } from "@/context/SessionContext";
-import { getBaseUrl } from "@workspace/api-client-react";
+
+function getApiBase(): string {
+  const domain = process.env["EXPO_PUBLIC_DOMAIN"];
+  return domain ? `https://${domain}` : "";
+}
 
 interface Message {
   id: string;
@@ -81,7 +85,7 @@ export default function ChatScreen() {
   useEffect(() => {
     const initConversation = async () => {
       try {
-        const base = getBaseUrl();
+        const base = getApiBase();
         const res = await fetch(`${base}/api/gemini/conversations`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -139,7 +143,7 @@ export default function ChatScreen() {
     setIsStreaming(true);
 
     try {
-      const base = getBaseUrl();
+      const base = getApiBase();
       const response = await fetch(
         `${base}/api/gemini/conversations/${conversationId}/messages`,
         {
