@@ -351,6 +351,13 @@ export default function ChatScreen() {
             </TouchableOpacity>
           )}
           <TouchableOpacity
+            onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); router.push("/(main)/resources"); }}
+            style={[styles.iconBtn, { backgroundColor: roleColor + "18" }]}
+            hitSlop={8}
+          >
+            <Feather name="book" size={16} color={roleColor} />
+          </TouchableOpacity>
+          <TouchableOpacity
             onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); router.replace("/"); }}
             style={[styles.iconBtn, { backgroundColor: colors.surface }]}
             hitSlop={8}

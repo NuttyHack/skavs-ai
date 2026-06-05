@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { db } from "@workspace/db";
-import { conversations, messages } from "@workspace/db";
+import { conversations, messages, resources } from "@workspace/db";
 import { eq, and, desc } from "drizzle-orm";
 import { GoogleGenAI } from "@google/genai";
 import { SCHOOL_KNOWLEDGE } from "./schoolKnowledge";
@@ -143,6 +143,119 @@ router.get("/educator/trending", async (req, res) => {
   } catch (err) {
     req.log.error({ err }, "Failed to get trending questions");
     res.status(500).json({ error: "Failed to get trending questions" });
+  }
+});
+
+// ─── Resources (public read) ─────────────────────────────────────────────────
+
+router.get("/resources", async (req, res) => {
+  try {
+    const grade = req.query["grade"] as string | undefined;
+    const subject = req.query["subject"] as string | undefined;
+
+    const all = await db
+      .select({
+        id: resources.id,
+        title: resources.title,
+        subject: resources.subject,
+        grade: resources.grade,
+        mimeType: resources.mimeType,
+        fileName: resources.fileName,
+        uploadedBy: resources.uploadedBy,
+        description: resources.description,
+        createdAt: resources.createdAt,
+      })
+      .from(resources)
+      .orderBy(desc(resources.createdAt));
+
+    const filtered = all.filter((r) => {
+      if (grade && r.grade && r.grade !== grade) return false;
+      if (subject && r.subject !== subject) return false;
+      return true;
+    });
+
+    res.json(filtered);
+  } catch (err) {
+    req.log.error({ err }, "Failed to list resources");
+    res.status(500).json({ error: "Failed to list resources" });
+  }
+});
+
+router.get("/resources/:id", async (req, res) => {
+  try {
+    const id = parseInt(req.params["id"] ?? "0", 10);
+    const [resource] = await db.select().from(resources).where(eq(resources.id, id));
+    if (!resource) {
+      res.status(404).json({ error: "Resource not found" });
+      return;
+    }
+    res.json(resource);
+  } catch (err) {
+    req.log.error({ err }, "Failed to get resource");
+    res.status(500).json({ error: "Failed to get resource" });
+  }
+});
+
+// ─── Resources (educator-protected write) ────────────────────────────────────
+
+router.post("/educator/resources", async (req, res) => {
+  const password = req.headers["x-educator-password"] as string | undefined;
+  if (password !== getEducatorPassword()) {
+    res.status(401).json({ error: "Unauthorized" });
+    return;
+  }
+  try {
+    const { title, subject, grade, mimeType, fileName, fileData, uploadedBy, description } =
+      req.body as {
+        title: string;
+        subject: string;
+        grade?: string | null;
+        mimeType: string;
+        fileName?: string | null;
+        fileData: string;
+        uploadedBy: string;
+        description?: string | null;
+      };
+
+    if (!title || !fileData || !uploadedBy) {
+      res.status(400).json({ error: "title, fileData, and uploadedBy are required" });
+      return;
+    }
+
+    const [resource] = await db
+      .insert(resources)
+      .values({
+        title,
+        subject: subject ?? "General",
+        grade: grade ?? null,
+        mimeType: mimeType ?? "text/plain",
+        fileName: fileName ?? null,
+        fileData,
+        uploadedBy,
+        description: description ?? null,
+      })
+      .returning();
+
+    res.status(201).json(resource);
+  } catch (err) {
+    req.log.error({ err }, "Failed to create resource");
+    res.status(500).json({ error: "Failed to create resource" });
+  }
+});
+
+router.delete("/educator/resources/:id", async (req, res) => {
+  const password = req.headers["x-educator-password"] as string | undefined;
+  if (password !== getEducatorPassword()) {
+    res.status(401).json({ error: "Unauthorized" });
+    return;
+  }
+  try {
+    const id = parseInt(req.params["id"] ?? "0", 10);
+    await db.delete(resources).where(eq(resources.id, id));
+    res.status(204).send();
+  } catch (err) {
+    req.log.error({ err }, "Failed to delete resource");
+    res.status(500).json({ error: "Failed to delete resource" });
   }
 });
 
