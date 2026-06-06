@@ -572,7 +572,7 @@ const styles = StyleSheet.create({
   },
   attachBtn: {
     width: 40, height: 40, borderRadius: 12, alignItems: "center",
-    justifyinit Content: "center", borderWidth: 1, flexShrink: 0,
+    justifyContent: "center", borderWidth: 1, flexShrink: 0,
   },
   textInput: {
     flex: 1, borderWidth: 1, borderRadius: 18, paddingHorizontal: 14,
