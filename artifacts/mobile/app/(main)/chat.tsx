@@ -87,7 +87,7 @@ const GRADES = ["8", "9", "10", "11", "12"];
 export default function ChatScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
-  const { name, role, grade, clearSession } = useSession();
+  const { name, role, grade } = useSession();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isStreaming, setIsStreaming] = useState(false);
@@ -229,33 +229,64 @@ export default function ChatScreen() {
         }
       );
 
-      const reader = response.body!.getReader();
-      const decoder = new TextDecoder();
-      let accumulated = "";
+      // Web platform stream support fallback
+      if (Platform.OS === "web" && response.body && typeof response.body.getReader === "function") {
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let accumulated = "";
 
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        const chunk = decoder.decode(value, { stream: true });
-        for (const line of chunk.split("\n")) {
-          if (line.startsWith("data: ")) {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          const chunk = decoder.decode(value, { stream: true });
+          for (const line of chunk.split("\n")) {
+            if (line.startsWith("data: ")) {
+              try {
+                const json = JSON.parse(line.slice(6)) as { content?: string; done?: boolean; error?: string };
+                if (json.content) {
+                  accumulated += json.content;
+                  const captured = accumulated;
+                  setMessages((prev) =>
+                    prev.map((m) => (m.id === assistantId ? { ...m, content: captured, streaming: true } : m))
+                  );
+                }
+                if (json.done || json.error) {
+                  setMessages((prev) =>
+                    prev.map((m) => (m.id === assistantId ? { ...m, streaming: false } : m))
+                  );
+                }
+              } catch {}
+            }
+          }
+        }
+      } else {
+        // Safe, native mobile parsing solution for React Native (Hermes engine compatible)
+        const responseText = await response.text();
+        const lines = responseText.split("\n");
+        let accumulated = "";
+
+        for (const line of lines) {
+          if (line.trim().startsWith("data: ")) {
             try {
-              const json = JSON.parse(line.slice(6)) as {
+              const rawJson = line.slice(6).trim();
+              if (!rawJson) continue;
+
+              const json = JSON.parse(rawJson) as {
                 content?: string;
                 done?: boolean;
                 error?: string;
               };
+
               if (json.content) {
                 accumulated += json.content;
                 const captured = accumulated;
                 setMessages((prev) =>
                   prev.map((m) =>
-                    m.id === assistantId
-                      ? { ...m, content: captured, streaming: true }
-                      : m
+                    m.id === assistantId ? { ...m, content: captured, streaming: true } : m
                   )
                 );
               }
+
               if (json.done || json.error) {
                 setMessages((prev) =>
                   prev.map((m) =>
@@ -263,7 +294,9 @@ export default function ChatScreen() {
                   )
                 );
               }
-            } catch {}
+            } catch (e) {
+              // Gracefully handle incomplete or split JSON strings safely
+            }
           }
         }
       }
@@ -505,13 +538,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18, paddingBottom: 12, borderBottomWidth: 1,
   },
   headerLeft: { gap: 3 },
-  headerName: { fontSize: 16, fontWeight: "600" as const },
+  headerName: { fontSize: 16, fontWeight: "600" },
   headerRight: { flexDirection: "row", gap: 8 },
   roleChip: {
     flexDirection: "row", alignItems: "center", gap: 5,
     borderWidth: 1, borderRadius: 20, paddingHorizontal: 10, paddingVertical: 3, alignSelf: "flex-start",
   },
-  roleChipText: { fontSize: 11, fontWeight: "600" as const },
+  roleChipText: { fontSize: 11, fontWeight: "600" },
   iconBtn: { width: 34, height: 34, borderRadius: 10, alignItems: "center", justifyContent: "center" },
   listContent: { paddingHorizontal: 14, paddingTop: 10, gap: 10 },
   msgRow: { flexDirection: "row", gap: 8, maxWidth: "88%" },
@@ -521,7 +554,7 @@ const styles = StyleSheet.create({
     width: 28, height: 28, borderRadius: 14, borderWidth: 1,
     alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 2,
   },
-  avatarText: { fontSize: 12, fontWeight: "700" as const },
+  avatarText: { fontSize: 12, fontWeight: "700" },
   bubble: { borderRadius: 16, paddingHorizontal: 13, paddingVertical: 10, flexShrink: 1, overflow: "hidden" },
   bubbleUser: { borderBottomRightRadius: 4 },
   bubbleAssistant: { borderBottomLeftRadius: 4, borderWidth: 1 },
@@ -539,7 +572,7 @@ const styles = StyleSheet.create({
   },
   attachBtn: {
     width: 40, height: 40, borderRadius: 12, alignItems: "center",
-    justifyContent: "center", borderWidth: 1, flexShrink: 0,
+    justifyinit Content: "center", borderWidth: 1, flexShrink: 0,
   },
   textInput: {
     flex: 1, borderWidth: 1, borderRadius: 18, paddingHorizontal: 14,
@@ -554,10 +587,10 @@ const styles = StyleSheet.create({
     flexDirection: "row", alignItems: "center", justifyContent: "space-between",
     paddingHorizontal: 20, paddingTop: 20, paddingBottom: 14, borderBottomWidth: 1,
   },
-  modalTitle: { fontSize: 17, fontWeight: "700" as const },
+  modalTitle: { fontSize: 17, fontWeight: "700" },
   gradeFilter: { flexShrink: 0 },
   filterChip: { borderWidth: 1, borderRadius: 20, paddingHorizontal: 14, paddingVertical: 7 },
-  filterChipText: { fontSize: 13, fontWeight: "600" as const },
+  filterChipText: { fontSize: 13, fontWeight: "600" },
   trendingLoading: { flex: 1, alignItems: "center", justifyContent: "center", gap: 12 },
   trendingEmpty: { fontSize: 14, textAlign: "center" },
   trendingItem: {
@@ -565,6 +598,6 @@ const styles = StyleSheet.create({
     borderRadius: 12, borderWidth: 1, padding: 12,
   },
   trendingNum: { width: 28, height: 28, borderRadius: 8, alignItems: "center", justifyContent: "center", flexShrink: 0 },
-  trendingNumText: { fontSize: 13, fontWeight: "700" as const },
+  trendingNumText: { fontSize: 13, fontWeight: "700" },
   trendingText: { flex: 1, fontSize: 14, lineHeight: 20 },
 });
