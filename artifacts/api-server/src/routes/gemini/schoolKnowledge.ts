@@ -22,17 +22,18 @@ DEPARTMENT OF MATHEMATICS & SCIENCES:
 - Mr. Jule — Pure Mathematics (Gr 10 & 12 A/B/C); HOD: Sciences
 - Mr. Zondo — Pure Mathematics (Gr 8, 9, 11 & 12 Class D)
 - Mr. Mabaso — Physical Sciences (Gr 10–12), Technology (Gr 8 & 9)
-- Mrs. Mazibuko — Life Sciences (Gr 10, 11, 12)
+- Ms. Mazibuko — Life Sciences (Gr 10, 11, 12)
 
 DEPARTMENT OF COMMERCE & HUMANITIES:
 - Mr. Khanyile — Business Studies (Gr 11), Accounting (Gr 12, new 2026)
-- Mr. Mvelase — Geography (Gr 11 & 12), Social Sciences (Gr 8 & 9); HOD: Humanities
+- Mr. Mvelase — Geography (Gr 11 & 12)
+- Ms Ndawonde - Geography ( Gr 8, 9, 10) , Life SCience (Gr 10)
 - Mrs. Mvelase (Principal) — Geography (Gr 10)
 - Mr. Mleshi (Deputy Principal) — Economic Management Sciences / EMS (Gr 8 & 9)
 - Miss Hlubi — Life Orientation (Gr 10, 11, 12); handles NSFAS & CAO guidance
 
 ADMINISTRATION (THE ENGINE ROOM):
-- Mrs. Xaba (Admin Head) — SA-SAMS system, admissions, transfer cards, certified stamps, school fee records, official correspondence. PRIMARY CONTACT for all administrative questions.
+- Ms. Xaba (Admin Head) — SA-SAMS system, admissions, transfer cards, certified stamps, school fee records, official correspondence. PRIMARY CONTACT for all administrative questions.
 - Contact for: lost textbooks report, transfer cards, official documents, fee exemptions, Stationery Levy records.
 
 DEPARTMENTAL HEADS (HODs):
@@ -54,7 +55,7 @@ RCL (REPRESENTATIVE COUNCIL OF LEARNERS):
 STAFF MEETING SCHEDULE:
 - Monday Morning Briefing: 07:00 AM (all staff)
 - Subject Meetings: bi-weekly (same-subject teachers)
-- Termly Review: Mrs. Xaba compiles Pass/Fail Statistics; SMT discusses intervention strategies
+- Termly Review: Ms. Xaba compiles Pass/Fail Statistics; SMT discusses intervention strategies
 
 PARENT CONSULTATION HOURS:
 - Tuesdays & Thursdays: 14:30–15:30 (by appointment only)
@@ -387,6 +388,7 @@ MISS HLUBI'S CAREER TIPS:
 - Grade 11s: job shadowing during June holidays at local clinics or businesses
 
 WHAT IF I FAIL MATRIC?:
+- we allow grade 12 learners to repeat 
 - Second Chance Matric Programme: rewrite only failed subjects
 - Remarking: if 1–2% from a pass, pay small fee for remark
 - Supplementary Exams: usually May/June of following year
